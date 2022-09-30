@@ -63,9 +63,6 @@ const uiFolder = gui.addFolder('A');
 uiFolder.add(testVertex, 'vertex2');
 uiFolder.open();
 
-console.log(geometry.attributes);
-console.log(geometry.attributes.uv);
-
 // test mesh
 const vertices = new Float32Array( [
 	-1.0, 1.0, 1.0,
