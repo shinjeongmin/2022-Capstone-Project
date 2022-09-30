@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import Stats from 'stats.js';
+import { GUI } from 'dat.gui'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { DoubleSide } from 'three';
 
 // Renderer
 const canvas = document.querySelector('#three-canvas');
@@ -40,20 +43,59 @@ const material = new THREE.MeshStandardMaterial({
     color: 'seagreen'
 });
 const mesh = new THREE.Mesh(geometry, material);
-scene.add(mesh);
+// scene.add(mesh);
 
-// Stats
+// Stats (FPS)
 const stats = new Stats();
 document.body.append(stats.domElement);
 
-// 그리기
-const clock = new THREE.Clock();
+// controller
+const controls = new OrbitControls( camera, renderer.domElement );
 
+// gui
+const gui = new GUI();
+const testVertex = { vertex1 : 1.0, vertex2 : -1.0};
+const Gparameters = { x: 0, y: 0, z: 0}
+
+var ui = gui.add(testVertex, 'vertex1').min(-10).max(10);
+ui = gui.add( Gparameters, 'x' ).min(0).max(200);
+const uiFolder = gui.addFolder('A');
+uiFolder.add(testVertex, 'vertex2');
+uiFolder.open();
+
+console.log(geometry.attributes);
+console.log(geometry.attributes.uv);
+
+// test mesh
+const vertices = new Float32Array( [
+	-1.0, 1.0, 1.0,
+	 1.0, -1.0,  1.0,
+	 1.0,  1.0,  1.0,
+
+	 1.0,  1.0,  1.0,
+	-1.0,  1.0,  1.0,
+	-1.0, -1.0,  1.0,
+] );
+
+const testGeometry = geometry.clone();
+const testMaterial = new THREE.MeshStandardMaterial({
+    color: 'seagreen',
+    side : DoubleSide,
+});
+testGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+const testMesh = new THREE.Mesh(testGeometry, testMaterial);
+scene.add(testMesh);
+
+// Draw
 function draw() {
-    const time = clock.getElapsedTime();
-
     stats.update();
-    mesh.rotation.y = time;
+
+    // testGeometry.attributes.position.array[0] = testVertex.vertex1;
+    vertices[1] = testVertex.vertex1;
+    
+    // console.log(testVertex);
+
+    testGeometry.attributes.position.needsUpdate = true;
 
     renderer.render(scene, camera);
     renderer.setAnimationLoop(draw);
