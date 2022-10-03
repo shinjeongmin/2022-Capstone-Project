@@ -82,6 +82,17 @@ const guis = {
                 )
             );
 
+            console.log(new CylinderGeometry(
+                data.radiusTop,
+                data.radiusBottom,
+                data.height,
+                data.radialSegments,
+                data.heightSegments,
+                data.openEnded,
+                data.thetaStart,
+                data.thetaLength
+            ));
+
             return new CylinderGeometry(
                 data.radiusTop,
                 data.radiusBottom,
@@ -104,7 +115,6 @@ const guis = {
         folder.add( data, 'openEnded' ).onChange( generateGeometry );
         folder.add( data, 'thetaStart', 0, twoPi ).onChange( generateGeometry );
         folder.add( data, 'thetaLength', 0, twoPi ).onChange( generateGeometry );
-
 
         return generateGeometry();
     }

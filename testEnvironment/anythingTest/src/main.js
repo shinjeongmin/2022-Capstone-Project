@@ -1,8 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
-// ----- 주제: Geometry 기본
-
 // Renderer
 const canvas = document.querySelector('#three-canvas');
 const renderer = new THREE.WebGLRenderer({
@@ -38,40 +36,30 @@ scene.add(directionalLight);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 // Mesh
-// const geometry = new THREE.SphereGeometry(5, 64, 64);
-const geometry = new THREE.PlaneGeometry(10, 10, 32, 32);
-const material = new THREE.MeshStandardMaterial({
-	color: 'orangered',
-	side: THREE.DoubleSide,
-	flatShading: true,
-});
-const mesh = new THREE.Mesh(geometry, material);
-scene.add(mesh);
+const points = [];
+points.push(new THREE.Vector3(-5, 0, 0));
+points.push(new THREE.Vector3(5, 0, 0));
 
-console.log(geometry.attributes.position.array);
-const positionArray = geometry.attributes.position.array;
-const randomArray = [];
-for (let i = 0; i < positionArray.length; i += 3){
-	positionArray[i] = positionArray[i] + (Math.random() - 0.5) * 0.2;
-	positionArray[i + 1] = positionArray[i + 1] + (Math.random() - 0.5) * 0.2;
-	positionArray[i + 2] = positionArray[i + 2] + (Math.random() - 0.5) * 0.2;
+let geometry = new THREE.BufferGeometry();
+let positions = new Float32Array(parameters.count * 3);
 
-	randomArray[i] = (Math.random() - 0.5) * 0.2;
-	randomArray[i + 1] = (Math.random() - 0.5) * 0.2;
-	randomArray[i + 2] = (Math.random() - 0.5) * 0.2;
+for (let i = 0; i < parameters.count; i++){
+	const i3 = i * 3;
+
+	positions[i3] = (Math.random() - 0.5) * 3;
+    positions[i3 + 1] = (Math.random() - 0.5) * 3;
+    positions[i3 + 2] = (Math.random() - 0.5) * 3;
 }
+geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
-// 그리기
+let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x888888 }))
+scene.add(line);
+
+// draw
 const clock = new THREE.Clock();
 
 function draw() {
 	const time = clock.getElapsedTime() * 3;
-
-	for (let i = 0; i < positionArray.length; i += 3){
-		positionArray[i] += Math.sin(time + randomArray[i] * 100) * 0.002;
-		positionArray[i + 1] += Math.sin(time + randomArray[i + 1] * 100) * 0.002;
-		positionArray[i + 2] += Math.sin(time + randomArray[i + 2] * 100) * 0.002;
-	}
 
 	geometry.attributes.position.needsUpdate = true;
 
